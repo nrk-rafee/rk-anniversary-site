@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "Happy Anniversary!",
-  description: "A special surprise website filled with love, memories, and heartfelt moments just for you💕",
+  description: "A special surprise website filled with love, memories, and heartfelt moments just for you Karnu💕",
 };
 
 
