@@ -8,7 +8,7 @@ export default function AnniversaryScreen({ onNext }) {
     const [displayedDays, setDisplayedDays] = useState(0)
 
     // Set your special date here (YYYY-MM-DD)
-    const specialDate = new Date("2024-09-11") // Change this to your actual date
+    const specialDate = new Date("2021-11-5") // Change this to your actual date
 
     useEffect(() => {
         // Calculate actual days since anniversary
