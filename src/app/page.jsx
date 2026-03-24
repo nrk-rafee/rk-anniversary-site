@@ -36,7 +36,7 @@ export default function AnniversaryApp() {
           delay: 1,
         }}
         className="fixed bottom-4 right-4 text-[13px] text-white/40 pointer-events-none z-50 font-light">
-        @anujbuilds
+        @nrk-rafee
       </motion.div>
     </div>
   )
