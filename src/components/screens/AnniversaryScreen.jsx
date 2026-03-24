@@ -7,7 +7,7 @@ import ScreenContainer from "../ScreenContainer";
 export default function AnniversaryScreen({ onNext }) {
   // ================= Day Calculation =================
   const [displayedDays, setDisplayedDays] = useState(0);
-  const specialDate = new Date("2025-01-05"); // Updated anniversary date
+  const specialDate = new Date("2025-01-05");
 
   useEffect(() => {
     const today = new Date();
@@ -44,15 +44,17 @@ export default function AnniversaryScreen({ onNext }) {
     const interval = setInterval(() => {
       const newHeart = {
         id: Date.now(),
-        top: Math.random() * 80 + 10, // 10%–90%
-        left: Math.random() * 80 + 10, // 10%–90%
+        top: Math.random() * 80 + 10,
+        left: Math.random() * 80 + 10,
       };
+
       setHearts((prev) => [...prev, newHeart]);
-      // Remove old hearts after 3 sec
+
       setTimeout(() => {
         setHearts((prev) => prev.filter((h) => h.id !== newHeart.id));
       }, 3000);
     }, 2000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -64,17 +66,13 @@ export default function AnniversaryScreen({ onNext }) {
   return (
     <ScreenContainer>
       <div className="text-center max-w-3xl mx-auto relative">
+
         {/* Audio */}
         <audio ref={audioRef} src="/public_audio_bg.mp3" loop />
 
-        {/* Image Slideshow */}
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <div className="w-36 h-36 md:w-40 md:h-40 mx-auto bg-pink-500/10 rounded-full flex items-center justify-center backdrop-blur-md border-2 border-pink-400/30 overflow-hidden">
+        {/* Image */}
+        <motion.div className="mb-8">
+          <div className="w-36 h-36 md:w-40 md:h-40 mx-auto bg-pink-500/10 rounded-full flex items-center justify-center border-2 border-pink-400/30 overflow-hidden">
             <img
               src={images[currentImage]}
               alt="img"
@@ -84,69 +82,47 @@ export default function AnniversaryScreen({ onNext }) {
         </motion.div>
 
         {/* Title */}
-        <motion.h1
-          className="text-4xl md:text-6xl font-bold text-pink-400 mb-8 text-balance leading-tight"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-        >
-          Happy Anniversary{" "}
-          <motion.span className="text-purple-400">Cutiepiee</motion.span>
-        </motion.h1>
+        <h1 className="text-4xl md:text-6xl font-bold text-pink-400 mb-8">
+          Happy Anniversary <span className="text-purple-400">Cutiepiee</span>
+        </h1>
 
         {/* Days */}
-        <motion.div
-          className="mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-        >
-          <p className="text-xl md:text-2xl text-pink-200 mb-6 text-pretty">
-            We've been together for
-          </p>
-          <motion.div
-            className="relative inline-block"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 1, duration: 0.5, type: "spring" }}
-          >
-            <motion.div className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">
-              {displayedDays}
-            </motion.div>
-          </motion.div>
-          <p className="text-xl md:text-2xl text-pink-200 mt-6 text-pretty">
-            days and counting...
-          </p>
-        </motion.div>
+        <div className="mb-12">
+          <p className="text-xl text-pink-200">We've been together for</p>
+          <div className="text-6xl font-bold text-pink-400">{displayedDays}</div>
+          <p className="text-xl text-pink-200">days and counting...</p>
+        </div>
 
-        {/* Start Journey Button */}
-        <motion.button
+        {/* Button */}
+        <button
           onClick={handleStartJourney}
-          className="group relative px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold"
         >
-          <motion.div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <span className="relative z-10">Start Our Journey 💫</span>
-        </motion.button>
+          Start Our Journey 💫
+        </button>
 
-        {/* ================ Heart Game Overlay ================= */}
+        {/* ❤️ Game */}
         {hearts.map((heart) => (
           <div
             key={heart.id}
             onClick={() => handleHeartClick(heart.id)}
-            className="absolute w-10 h-10 bg-pink-400 rounded-full cursor-pointer animate-bounce shadow-lg"
+            className="absolute text-3xl cursor-pointer animate-bounce"
             style={{ top: `${heart.top}%`, left: `${heart.left}%` }}
-          />
+          >
+            ❤️
+          </div>
         ))}
 
         {/* Score */}
-        <div className="absolute top-4 right-4 text-white font-bold text-lg bg-purple-500/70 px-4 py-2 rounded-full shadow-lg">
+        <div className="absolute top-4 right-4 bg-purple-500 text-white px-4 py-2 rounded-full">
           ❤️ {score}
         </div>
+
+        {/* Instruction */}
+        <div className="absolute top-16 right-4 text-white text-sm">
+          Catch the hearts 💖
+        </div>
+
       </div>
     </ScreenContainer>
   );
