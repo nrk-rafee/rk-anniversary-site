@@ -18,7 +18,22 @@ export default function AnniversaryScreen({ onNext }) {
         setDisplayedDays(daysDiff)
 
     }, [])
+const images = [
+  "/images/5.jpg",
+  "/images/6.jpg",
+  "/images/7.jpg",
+  "/images/8.jpg"
+];
 
+const [currentImage, setCurrentImage] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentImage((prev) => (prev + 1) % images.length);
+  }, 2000);
+
+  return () => clearInterval(interval);
+}, []);
     return (
         <ScreenContainer>
             <div className="text-center max-w-3xl mx-auto">
@@ -30,10 +45,10 @@ export default function AnniversaryScreen({ onNext }) {
                 >
                     <div className="w-36 h-36 md:w-40 md:h-40 mx-auto bg-pink-500/10 rounded-full flex items-center justify-center backdrop-blur-md border-2 border-pink-400/30 overflow-hidden">
                         <img
-                            src="/gifs/anniversary.gif"
-                            alt="img"
-                            className="w-28 md:w-32 object-cover rounded-full"
-                        />
+  src={images[currentImage]}
+  alt="img"
+  className="w-28 md:w-32 object-cover rounded-full"
+/>
                     </div>
                 </motion.div>
 
