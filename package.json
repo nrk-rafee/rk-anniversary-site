@@ -6,21 +6,22 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint"
   },
   "dependencies": {
-  "canvas-confetti": "^1.9.3",
-  "framer-motion": "^12.23.12",
-  "keen-slider": "^6.8.6",
-  "lucide-react": "^0.542.0",
-  "next": "latest",
-  "react": "19.1.0",
-  "react-dom": "19.1.0"
-},
-"devDependencies": {
-  "@eslint/eslintrc": "^3",
-  "@tailwindcss/postcss": "^4",
-  "eslint": "^9",
-  "eslint-config-next": "latest",
-  "tailwindcss": "^4"
+    "canvas-confetti": "^1.9.3",
+    "framer-motion": "^12.23.12",
+    "keen-slider": "^6.8.6",
+    "lucide-react": "^0.542.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "latest",
+    "tailwindcss": "^4"
+  }
 }
