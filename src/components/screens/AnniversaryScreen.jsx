@@ -35,21 +35,26 @@ export default function AnniversaryScreen({ onNext }) {
   // ================= Audio Management =================
   const audioRef = useRef(null);
 
+  useEffect(() => {
+    // অডিও ফাইল লোড করা
+    audioRef.current = new Audio("/public_audio_bg.mp3");
+    audioRef.current.loop = true;
+    
+    // ক্লিনআপ ফাংশন: স্ক্রিন ছেড়ে চলে গেলেও গান যেন বন্ধ না হয় 
+    // তাই আমরা এখানে pause() কল করছি না।
+  }, []);
+
   const handleStartJourney = () => {
     if (audioRef.current) {
-      // গানটি প্লে করার চেষ্টা এবং লুপ নিশ্চিত করা
-      audioRef.current.loop = true; 
       audioRef.current.play()
         .then(() => {
-          console.log("Playback started successfully");
-          // গান শুরু হওয়ার পর সামান্য বিরতি দিয়ে পরের স্ক্রিনে যাওয়া
-          setTimeout(() => {
-            onNext();
-          }, 100); 
+          // গানটি গ্লোবাল উইন্ডোতে সেভ করে রাখা যাতে অন্য পেজেও এক্সেস করা যায়
+          window.globalAudio = audioRef.current;
+          onNext();
         })
         .catch(e => {
-          console.error("Audio play error:", e);
-          onNext(); // এরর হলেও যেন অ্যাপ আটকে না থাকে
+          console.error("Audio error:", e);
+          onNext();
         });
     } else {
       onNext();
@@ -86,14 +91,6 @@ export default function AnniversaryScreen({ onNext }) {
     <ScreenContainer>
       <div className="text-center max-w-3xl mx-auto relative min-h-[80vh] flex flex-col items-center justify-center">
         
-        {/* Audio Element - public/ folder er vitor theke load hobe */}
-        <audio 
-          ref={audioRef} 
-          src="/public_audio_bg.mp3" 
-          preload="auto"
-          loop 
-        />
-
         {/* Profile Image Slideshow */}
         <motion.div 
           initial={{ scale: 0 }}
@@ -126,7 +123,7 @@ export default function AnniversaryScreen({ onNext }) {
           <span className="text-purple-400">Cutiepiee</span>
         </motion.h1>
 
-        {/* Anniversary Counter */}
+        {/* Counter */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -140,15 +137,16 @@ export default function AnniversaryScreen({ onNext }) {
           <p className="text-lg text-pink-200 italic">beautiful days and counting...</p>
         </motion.div>
 
-        {/* Anniversary GIF Section */}
-        <div className="relative w-72 h-72 md:w-80 md:h-80 mb-10 group">
-          <div className="absolute inset-0 bg-gradient-to-tr from-pink-500 to-purple-500 rounded-3xl rotate-3 group-hover:rotate-6 transition-transform"></div>
+        {/* Middle GIF */}
+        <div className="relative w-72 h-72 md:w-80 md:h-80 mb-10">
           <img
             src="/gifs/anniversary.gif"
             alt="Anniversary Celebration"
-            className="relative w-full h-full object-cover rounded-3xl border-2 border-white/20 shadow-2xl"
+            className="w-full h-full object-cover rounded-3xl border-2 border-white/20 shadow-2xl"
           />
         </div>
+
+        <p className="text-pink-300 mb-4 italic">It's Our Special Day</p>
 
         {/* Start Button */}
         <motion.button
@@ -160,7 +158,7 @@ export default function AnniversaryScreen({ onNext }) {
           Start Our Journey 💫
         </motion.button>
 
-        {/* Floating Hearts Overlay */}
+        {/* Hearts game overlay */}
         <AnimatePresence>
           {hearts.map((heart) => (
             <motion.div
@@ -177,10 +175,9 @@ export default function AnniversaryScreen({ onNext }) {
           ))}
         </AnimatePresence>
 
-        {/* Score Display */}
-        <div className="fixed top-6 right-6 flex flex-col items-end gap-1">
-          <div className="bg-pink-500/20 backdrop-blur-md border border-pink-500/30 text-white px-5 py-2 rounded-full font-bold flex items-center gap-2">
-            <span className="text-xl">❤️</span> {score}
+        <div className="fixed top-6 right-6">
+          <div className="bg-pink-500/20 backdrop-blur-md border border-pink-500/30 text-white px-5 py-2 rounded-full font-bold">
+            ❤️ {score}
           </div>
         </div>
 
