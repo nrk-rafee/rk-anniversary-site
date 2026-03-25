@@ -37,6 +37,7 @@ export default function AnniversaryScreen({ onNext }) {
 
   const handleStartJourney = () => {
     if (audioRef.current) {
+      // eikhane audio file er path thik kora hoyeche
       audioRef.current.play().catch(e => console.log("Audio play error:", e));
     }
     onNext();
@@ -50,12 +51,11 @@ export default function AnniversaryScreen({ onNext }) {
     const interval = setInterval(() => {
       const newHeart = {
         id: Date.now(),
-        top: Math.random() * 70 + 15, // Screen er moddhe thakar jonno
+        top: Math.random() * 70 + 15,
         left: Math.random() * 80 + 10,
       };
       setHearts((prev) => [...prev, newHeart]);
       
-      // 3 second por heart muche fela
       setTimeout(() => {
         setHearts((prev) => prev.filter((h) => h.id !== newHeart.id));
       }, 3000);
@@ -69,27 +69,11 @@ export default function AnniversaryScreen({ onNext }) {
     setHearts((prev) => prev.filter((h) => h.id !== id));
   };
 
-  // ================= Memory Slideshow =================
-  const memoryImages = [
-    "/images/1.jpg",
-    "/images/2.jpg",
-    "/images/3.jpg",
-    "/images/4.jpg",
-  ];
-  const [currentMemory, setCurrentMemory] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentMemory((prev) => (prev + 1) % memoryImages.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <ScreenContainer>
       <div className="text-center max-w-3xl mx-auto relative min-h-[80vh] flex flex-col items-center justify-center">
         
-        {/* Audio Element - Make sure the file is in 'public' folder */}
+        {/* Audio Element - Root folder e thaka file er path thik kora hoyeche */}
         <audio ref={audioRef} src="/public_audio_bg.mp3" loop />
 
         {/* Main Profile Image Slideshow */}
@@ -138,21 +122,14 @@ export default function AnniversaryScreen({ onNext }) {
           <p className="text-lg text-pink-200 italic">beautiful days and counting...</p>
         </motion.div>
 
-        {/* Memory Slideshow (Instead of the marked section) */}
+        {/* GIF Section - Memory slideshow bad diye eikhane GIF add kora hoyeche */}
         <div className="relative w-72 h-72 md:w-80 md:h-80 mb-10 group">
           <div className="absolute inset-0 bg-gradient-to-tr from-pink-500 to-purple-500 rounded-3xl rotate-3 group-hover:rotate-6 transition-transform"></div>
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={currentMemory}
-              src={memoryImages[currentMemory]}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              transition={{ duration: 0.8 }}
-              alt="Memory"
-              className="relative w-full h-full object-cover rounded-3xl border-2 border-white/20 shadow-2xl"
-            />
-          </AnimatePresence>
+          <img
+            src="/gifs/anniversary.gif"
+            alt="Anniversary Celebration"
+            className="relative w-full h-full object-cover rounded-3xl border-2 border-white/20 shadow-2xl"
+          />
         </div>
 
         {/* Action Button */}
