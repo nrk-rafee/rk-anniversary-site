@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ScreenContainer from "../ScreenContainer";
 
 export default function AnniversaryScreen({ onNext }) {
+
   // ================= Day Calculation =================
   const [displayedDays, setDisplayedDays] = useState(0);
   const specialDate = new Date("2025-01-05");
@@ -23,6 +24,7 @@ export default function AnniversaryScreen({ onNext }) {
     "/images/7.jpg",
     "/images/8.jpg"
   ];
+
   const [currentProfile, setCurrentProfile] = useState(0);
 
   useEffect(() => {
@@ -32,28 +34,31 @@ export default function AnniversaryScreen({ onNext }) {
     return () => clearInterval(interval);
   }, []);
 
-  // ================= Audio Management =================
+  // ================= 🔥 FIXED AUDIO =================
   const audioRef = useRef(null);
 
   useEffect(() => {
-    // অডিও ফাইল লোড করা
-    audioRef.current = new Audio("/public_audio_bg.mp3");
-    audioRef.current.loop = true;
-    
-    // ক্লিনআপ ফাংশন: স্ক্রিন ছেড়ে চলে গেলেও গান যেন বন্ধ না হয় 
-    // তাই আমরা এখানে pause() কল করছি না।
+    // যদি আগে থেকেই audio থাকে → use it
+    if (typeof window !== "undefined") {
+      if (window.globalAudio) {
+        audioRef.current = window.globalAudio;
+      } else {
+        const audio = new Audio("/public_audio_bg.mp3");
+        audio.loop = true;
+        audioRef.current = audio;
+        window.globalAudio = audio; // global save
+      }
+    }
   }, []);
 
   const handleStartJourney = () => {
     if (audioRef.current) {
       audioRef.current.play()
         .then(() => {
-          // গানটি গ্লোবাল উইন্ডোতে সেভ করে রাখা যাতে অন্য পেজেও এক্সেস করা যায়
-          window.globalAudio = audioRef.current;
-          onNext();
+          onNext(); // page change হলেও গান চলবে
         })
-        .catch(e => {
-          console.error("Audio error:", e);
+        .catch((e) => {
+          console.log("Play blocked:", e);
           onNext();
         });
     } else {
@@ -61,7 +66,7 @@ export default function AnniversaryScreen({ onNext }) {
     }
   };
 
-  // ================= Heart Game Logic =================
+  // ================= Heart Game =================
   const [hearts, setHearts] = useState([]);
   const [score, setScore] = useState(0);
 
@@ -72,8 +77,9 @@ export default function AnniversaryScreen({ onNext }) {
         top: Math.random() * 70 + 15,
         left: Math.random() * 80 + 10,
       };
+
       setHearts((prev) => [...prev, newHeart]);
-      
+
       setTimeout(() => {
         setHearts((prev) => prev.filter((h) => h.id !== newHeart.id));
       }, 3000);
@@ -90,14 +96,10 @@ export default function AnniversaryScreen({ onNext }) {
   return (
     <ScreenContainer>
       <div className="text-center max-w-3xl mx-auto relative min-h-[80vh] flex flex-col items-center justify-center">
-        
-        {/* Profile Image Slideshow */}
-        <motion.div 
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="mb-6"
-        >
-          <div className="w-40 h-40 mx-auto bg-pink-500/10 rounded-full flex items-center justify-center border-4 border-pink-400/50 overflow-hidden shadow-lg shadow-pink-500/20">
+
+        {/* Profile Image */}
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="mb-6">
+          <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border-4 border-pink-400/50">
             <AnimatePresence mode="wait">
               <motion.img
                 key={currentProfile}
@@ -105,8 +107,6 @@ export default function AnniversaryScreen({ onNext }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
-                alt="Profile"
                 className="w-full h-full object-cover"
               />
             </AnimatePresence>
@@ -114,60 +114,43 @@ export default function AnniversaryScreen({ onNext }) {
         </motion.div>
 
         {/* Title */}
-        <motion.h1 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="text-4xl md:text-6xl font-bold text-pink-400 mb-6 drop-shadow-md"
-        >
+        <h1 className="text-4xl md:text-6xl font-bold text-pink-400 mb-6">
           Happy Anniversary <br />
           <span className="text-purple-400">Cutiepiee</span>
-        </motion.h1>
+        </h1>
 
-        {/* Counter */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mb-10 p-6 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10"
-        >
-          <p className="text-lg text-pink-200 italic">We've been together for</p>
-          <div className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500">
-            {displayedDays}
-          </div>
-          <p className="text-lg text-pink-200 italic">beautiful days and counting...</p>
-        </motion.div>
-
-        {/* Middle GIF */}
-        <div className="relative w-72 h-72 md:w-80 md:h-80 mb-10">
-          <img
-            src="/gifs/anniversary.gif"
-            alt="Anniversary Celebration"
-            className="w-full h-full object-cover rounded-3xl border-2 border-white/20 shadow-2xl"
-          />
+        {/* Days */}
+        <div className="mb-10">
+          <p className="text-lg text-pink-200">We've been together for</p>
+          <div className="text-7xl font-black text-pink-400">{displayedDays}</div>
+          <p className="text-lg text-pink-200">beautiful days ❤️</p>
         </div>
 
-        <p className="text-pink-300 mb-4 italic">It's Our Special Day</p>
+        {/* GIF */}
+        <img
+          src="/gifs/anniversary.gif"
+          className="w-72 h-72 object-cover rounded-3xl mb-6"
+        />
 
-        {/* Start Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <p className="text-pink-300 mb-4 italic">
+          It's Our Special Day 💖
+        </p>
+
+        {/* BUTTON */}
+        <button
           onClick={handleStartJourney}
-          className="px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-full font-bold text-lg shadow-lg hover:shadow-pink-500/40 transition-all z-20"
+          className="px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-full font-bold text-lg"
         >
           Start Our Journey 💫
-        </motion.button>
+        </button>
 
-        {/* Hearts game overlay */}
+        {/* Hearts */}
         <AnimatePresence>
           {hearts.map((heart) => (
             <motion.div
               key={heart.id}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
               onClick={() => handleHeartClick(heart.id)}
-              className="absolute text-4xl cursor-pointer z-10 select-none"
+              className="absolute text-4xl cursor-pointer"
               style={{ top: `${heart.top}%`, left: `${heart.left}%` }}
             >
               ❤️
@@ -175,10 +158,9 @@ export default function AnniversaryScreen({ onNext }) {
           ))}
         </AnimatePresence>
 
-        <div className="fixed top-6 right-6">
-          <div className="bg-pink-500/20 backdrop-blur-md border border-pink-500/30 text-white px-5 py-2 rounded-full font-bold">
-            ❤️ {score}
-          </div>
+        {/* Score */}
+        <div className="fixed top-6 right-6 bg-pink-500 text-white px-4 py-2 rounded-full">
+          ❤️ {score}
         </div>
 
       </div>
