@@ -16,7 +16,7 @@ export default function AnniversaryScreen({ onNext }) {
     setDisplayedDays(daysDiff);
   }, []);
 
-  // ================= Main Profile Image Slideshow =================
+  // ================= Profile Image Slideshow =================
   const profileImages = [
     "/images/5.jpg",
     "/images/6.jpg",
@@ -37,10 +37,23 @@ export default function AnniversaryScreen({ onNext }) {
 
   const handleStartJourney = () => {
     if (audioRef.current) {
-      // eikhane audio file er path thik kora hoyeche
-      audioRef.current.play().catch(e => console.log("Audio play error:", e));
+      // গানটি প্লে করার চেষ্টা এবং লুপ নিশ্চিত করা
+      audioRef.current.loop = true; 
+      audioRef.current.play()
+        .then(() => {
+          console.log("Playback started successfully");
+          // গান শুরু হওয়ার পর সামান্য বিরতি দিয়ে পরের স্ক্রিনে যাওয়া
+          setTimeout(() => {
+            onNext();
+          }, 100); 
+        })
+        .catch(e => {
+          console.error("Audio play error:", e);
+          onNext(); // এরর হলেও যেন অ্যাপ আটকে না থাকে
+        });
+    } else {
+      onNext();
     }
-    onNext();
   };
 
   // ================= Heart Game Logic =================
@@ -73,10 +86,15 @@ export default function AnniversaryScreen({ onNext }) {
     <ScreenContainer>
       <div className="text-center max-w-3xl mx-auto relative min-h-[80vh] flex flex-col items-center justify-center">
         
-        {/* Audio Element - Root folder e thaka file er path thik kora hoyeche */}
-        <audio ref={audioRef} src="/public_audio_bg.mp3" loop />
+        {/* Audio Element - public/ folder er vitor theke load hobe */}
+        <audio 
+          ref={audioRef} 
+          src="/public_audio_bg.mp3" 
+          preload="auto"
+          loop 
+        />
 
-        {/* Main Profile Image Slideshow */}
+        {/* Profile Image Slideshow */}
         <motion.div 
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -108,7 +126,7 @@ export default function AnniversaryScreen({ onNext }) {
           <span className="text-purple-400">Cutiepiee</span>
         </motion.h1>
 
-        {/* Counter Section */}
+        {/* Anniversary Counter */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -122,7 +140,7 @@ export default function AnniversaryScreen({ onNext }) {
           <p className="text-lg text-pink-200 italic">beautiful days and counting...</p>
         </motion.div>
 
-        {/* GIF Section - Memory slideshow bad diye eikhane GIF add kora hoyeche */}
+        {/* Anniversary GIF Section */}
         <div className="relative w-72 h-72 md:w-80 md:h-80 mb-10 group">
           <div className="absolute inset-0 bg-gradient-to-tr from-pink-500 to-purple-500 rounded-3xl rotate-3 group-hover:rotate-6 transition-transform"></div>
           <img
@@ -132,7 +150,7 @@ export default function AnniversaryScreen({ onNext }) {
           />
         </div>
 
-        {/* Action Button */}
+        {/* Start Button */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -142,7 +160,7 @@ export default function AnniversaryScreen({ onNext }) {
           Start Our Journey 💫
         </motion.button>
 
-        {/* Heart Catching Game Overlay */}
+        {/* Floating Hearts Overlay */}
         <AnimatePresence>
           {hearts.map((heart) => (
             <motion.div
@@ -159,13 +177,10 @@ export default function AnniversaryScreen({ onNext }) {
           ))}
         </AnimatePresence>
 
-        {/* Game UI */}
+        {/* Score Display */}
         <div className="fixed top-6 right-6 flex flex-col items-end gap-1">
           <div className="bg-pink-500/20 backdrop-blur-md border border-pink-500/30 text-white px-5 py-2 rounded-full font-bold flex items-center gap-2">
             <span className="text-xl">❤️</span> {score}
-          </div>
-          <div className="text-pink-200/60 text-xs font-medium animate-pulse">
-            Catch the hearts! ✨
           </div>
         </div>
 
