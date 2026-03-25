@@ -17,7 +17,7 @@ export default function AnniversaryScreen({ onNext }) {
   }, []);
 
   // ================= Main Image Slideshow =================
-  const images = ["/images/5.jpg", "/images/6.jpg", "/images/7.jpg", "/images/8.jpg"];
+  const images = ["public/gifs/anniversary.gif"];
   const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
@@ -87,7 +87,10 @@ export default function AnniversaryScreen({ onNext }) {
         <motion.div className="mb-8">
           <div className="w-36 h-36 md:w-40 md:h-40 mx-auto bg-pink-500/10 rounded-full flex items-center justify-center border-2 border-pink-400/30 overflow-hidden">
             <img
-              src={images[currentImage]}
+              src={"/images/5.jpg",
+"/images/6.jpg",
+"/images /7. jpg",
+"/images /8.jpg"]}
               alt="img"
               className="w-28 md:w-32 object-cover rounded-full"
             />
