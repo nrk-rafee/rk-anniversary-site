@@ -16,7 +16,7 @@ export default function AnniversaryScreen({ onNext }) {
     setDisplayedDays(daysDiff);
   }, []);
 
-  // ================= Image Slideshow =================
+  // ================= Main Image Slideshow =================
   const images = ["/images/5.jpg", "/images/6.jpg", "/images/7.jpg", "/images/8.jpg"];
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -47,9 +47,7 @@ export default function AnniversaryScreen({ onNext }) {
         top: Math.random() * 80 + 10,
         left: Math.random() * 80 + 10,
       };
-
       setHearts((prev) => [...prev, newHeart]);
-
       setTimeout(() => {
         setHearts((prev) => prev.filter((h) => h.id !== newHeart.id));
       }, 3000);
@@ -63,14 +61,29 @@ export default function AnniversaryScreen({ onNext }) {
     setHearts((prev) => prev.filter((h) => h.id !== id));
   };
 
+  // ================= Our Beautiful Memory Slideshow =================
+  const memoryImages = [
+    "/images/1.jpg",
+    "/images/2.jpg",
+    "/images/3.jpg",
+    "/images/4.jpg",
+  ];
+  const [currentMemory, setCurrentMemory] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMemory((prev) => (prev + 1) % memoryImages.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <ScreenContainer>
       <div className="text-center max-w-3xl mx-auto relative">
-
         {/* Audio */}
         <audio ref={audioRef} src="/public_audio_bg.mp3" loop />
 
-        {/* Image */}
+        {/* Main Image */}
         <motion.div className="mb-8">
           <div className="w-36 h-36 md:w-40 md:h-40 mx-auto bg-pink-500/10 rounded-full flex items-center justify-center border-2 border-pink-400/30 overflow-hidden">
             <img
@@ -93,15 +106,24 @@ export default function AnniversaryScreen({ onNext }) {
           <p className="text-xl text-pink-200">days and counting...</p>
         </div>
 
-        {/* Button */}
+        {/* Start Journey Button */}
         <button
           onClick={handleStartJourney}
-          className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold"
+          className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold mb-12"
         >
           Start Our Journey 💫
         </button>
 
-        {/* ❤️ Game */}
+        {/* Our Beautiful Memory Slideshow */}
+        <div className="memory-slideshow mb-12">
+          <img
+            src={memoryImages[currentMemory]}
+            alt="Our Beautiful Memory"
+            className="w-72 h-72 md:w-96 md:h-96 object-cover rounded-lg mx-auto"
+          />
+        </div>
+
+        {/* Heart Game */}
         {hearts.map((heart) => (
           <div
             key={heart.id}
@@ -118,11 +140,10 @@ export default function AnniversaryScreen({ onNext }) {
           ❤️ {score}
         </div>
 
-        {/* Instruction */}
+        {/* Game Instruction */}
         <div className="absolute top-16 right-4 text-white text-sm">
           Catch the hearts 💖
         </div>
-
       </div>
     </ScreenContainer>
   );
