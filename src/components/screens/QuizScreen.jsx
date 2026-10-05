@@ -31,9 +31,9 @@ const questions = [
         correct: 0,
     },
     {
-        question: "Amader shomporko take tui kivhabe dekhis?",
+        question: "Amader shomporko take tumi kivhabe dekho?",
         options: [
-            "situation",
+            "situation ship",
             "love",
             "bestfrnd",
             "just frndfrnd",
